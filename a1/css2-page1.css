@@ -1,0 +1,35 @@
+#box-outside {
+	width: 600px;
+	height: 449px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+
+	border-color: #BBBBBB;
+	border-style: solid;
+
+	padding: 0px;
+
+	background-image: url("http://i.imgur.com/piYga12.jpg?1");
+
+}
+
+#box-inside {
+	padding: 25px;
+}
+
+#test {
+	font-family: 'Brush Script MT', cursive;
+	font-size: 48px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 52.8px;
+	color: black;
+	
+	padding: 10px;
+	margin:0;
+
+	background-color: #BBBBBB;
+	opacity: 0.5;
+}

@@ -1,0 +1,17 @@
+#box-outside {
+
+	width: 638px;
+	height: 640px;
+	display: block;
+
+	background-image: url("https://pbs.twimg.com/profile_images/378800000532546226/dbe5f0727b69487016ffd67a6689e75a.jpeg")
+}
+
+#box-inside	{
+	padding:25px;
+}
+
+#test {
+	color: white;
+	font-family: "Comic Sans MS", cursive, sans-serif;
+}

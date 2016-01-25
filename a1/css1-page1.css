@@ -1,0 +1,9 @@
+body {
+	background-color: #DDDDDD;
+}
+
+#test {
+	font-style: bold;
+	font-size: 3em;
+	color: red;
+}
