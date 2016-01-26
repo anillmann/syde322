@@ -1,0 +1,30 @@
+/* January 25, 2016
+ by: Andrew Illmann, 2041037; Melissa Lynette, 20410774 */
+
+#main-container {
+	width: 760px;
+	margin-left: auto;
+	margin-right: auto;
+
+	border-color: #808080;
+	border-style: solid;
+}
+
+
+body {
+	color: #505050;
+	font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.buttons {
+	margin: 20px;
+	padding: 10px;
+
+	border-color: #00BFFF;
+	background-color: #00FFFF;
+	border-style: solid;
+}
+
+#title {
+	text-align: center;
+}
