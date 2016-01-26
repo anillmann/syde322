@@ -1,0 +1,111 @@
+/* January 25, 2016
+ by: Andrew Illmann, 2041037; Melissa Lynette, 20410774 */
+
+body {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1em;
+	line-height: 1em;
+
+}
+
+#main-container {
+	margin-left: auto;
+	margin-right: auto;
+
+	width: 324px;
+
+	border-color: black;
+	border-style: solid;
+
+	background-color: #D3D3D3;
+}
+
+#display {
+	width: 270px;
+	margin-top: 1em;
+	padding-right: 1em;
+	text-align: right;
+	background-color: #00BFFF;
+}
+
+#enter {
+	width: 207px;
+	background-color: #A0522D;
+
+}
+
+#keypad {
+	width: auto;
+	height: auto;
+
+	display: block;
+	
+	margin-left: auto;
+	margin-right: auto;
+
+	border-color: red;
+	border-style: solid;
+}
+
+.row {
+
+	display: block;
+
+}
+
+.cell {
+	width: 48px;
+
+	margin-top: 0em;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+
+	text-align: center;
+
+	border-color: black;
+	border-style: solid;
+
+	display: inline-block;
+}
+
+.number {
+	background-color: #808080;
+
+	width: 48px;
+
+	margin-top: 0em;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+
+	text-align: center;
+
+	border-color: black;
+	border-style: solid;
+
+	display: inline-block;
+}
+
+.operator {
+	background-color: #663399;
+	font-style: bold;
+	color: #FFFFFF;
+
+	width: 48px;
+
+	margin-top: 0em;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+
+	text-align: center;
+
+	border-color: black;
+	border-style: solid;
+
+	display: inline-block;
+}
