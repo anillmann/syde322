@@ -193,6 +193,34 @@ $(document).ready(function(){
 	    }
     });
 
+    $("#zero").click(function(){
+    	if (rset != 1) {
+	    	if (clicks == 0) {
+	    		numdisp = 0;
+	    		clicks = clicks + 1;
+	    	} else {
+	    		numdisp = numdisp*10 + 0;
+	    		clicks = clicks + 1;
+	    	}
+	    	console.log(numdisp)
+	    	$("#display").text(numdisp);
+	    }
+    });
+
+    $("#neg").click(function(){
+    	if (rset != 1) {
+	    	if (clicks == 0) {
+	    		numdisp = 0;
+	    		clicks = clicks + 1;
+	    	} else {
+	    		numdisp = numdisp*-1;
+	    		clicks = clicks + 1;
+	    	}
+	    	console.log(numdisp)
+	    	$("#display").text(numdisp);
+	    }
+    });
+
     $('#plus').click(function(){
     	if (rset != 1) {
 	    	if (opclicks == 0) {
