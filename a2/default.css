@@ -1,0 +1,21 @@
+body {
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+
+	padding: 25px;
+
+	border-color: black;
+	border-style: solid;
+}
+
+h1 {
+	text-align: center;
+}
+
+table, td {
+	border-color: black;
+	border-style: solid;
+	border-collapse: collapse;
+	padding: 10px;
+}
