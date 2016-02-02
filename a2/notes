@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h2>JSON Processing in JavaScript</h2>
+		<p id="testParagraph"></p>
+		<script>
+			var xmlhttp = new XMLHttpRequest();
+			var url = 'http://api.tvmaze.com/shows/67'
+
+			xmlhttp.onreadystatechange = function(){
+				if(xmlhttp.readyState ==4 && xmlhttp.status = 200) {
+					var myArr = 
+				}
+			}
+
+http://api.tvmaze.com/shows/161
+http://api.tvmaze.com/shows/84
+http://api.tvmaze.com/shows/169
+http://api.tvmaze.com/shows/194
+http://api.tvmaze.com/shows/67
