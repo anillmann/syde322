@@ -1,0 +1,46 @@
+
+Your submission results compared to the expected:
+
+────────────────────────────────────────────────────────────────────────────────
+
+1.  ACTUAL:    "213"
+1.  EXPECTED:  "213"
+
+2.  ACTUAL:    "She'll be right thingo mate as stands out like bodgy. Trent from punchy gobful mate come a paddock."
+2.  EXPECTED:  "She'll be right thingo mate as stands out like bodgy. Trent from punchy gobful mate come a paddock."
+
+3.  ACTUAL:    "Built like a waggin' school piece of piss watch out for the slabs. Come a cleanskin heaps as cunning as a dunny. "
+3.  EXPECTED:  "Built like a waggin' school piece of piss watch out for the slabs. Come a cleanskin heaps as cunning as a dunny. "
+
+4.  ACTUAL:    ""
+4.  EXPECTED:  ""
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ✓ Submission results match expected  
+   
+ # PASS  
+   
+  Your solution to HTTP COLLECT passed!  
+   
+  Here's the official solution in case you want to compare notes:  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+   
+     var http = require('http')  
+     var bl = require('bl')  
+       
+     http.get(process.argv[2], function (response) {  
+       response.pipe(bl(function (err, data) {  
+         if (err)  
+           return console.error(err)  
+         data = data.toString()  
+         console.log(data.length)  
+         console.log(data)  
+       }))    
+     })  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+  You have 6 challenges left. Type 'learnyounode' to show the menu.  
+   

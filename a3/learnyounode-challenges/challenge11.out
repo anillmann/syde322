@@ -1,0 +1,41 @@
+listening on port:38930
+
+Your submission results compared to the expected:
+
+────────────────────────────────────────────────────────────────────────────────
+
+1.  ACTUAL:    "Trent from punchy rollie where lets get some durry. Shazza got us some rort how as stands out like stubby holder. As cross as a dill bloody gutful of truckie."
+1.  EXPECTED:  "Trent from punchy rollie where lets get some durry. Shazza got us some rort how as stands out like stubby holder. As cross as a dill bloody gutful of truckie."
+
+2.  ACTUAL:    ""
+2.  EXPECTED:  ""
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ✓ Submission results match expected  
+   
+  ✗ Used fs method other than fs.createReadStream(): fs.createReadStream()  
+   
+ # PASS  
+   
+  Your solution to HTTP FILE SERVER passed!  
+   
+  Here's the official solution in case you want to compare notes:  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+   
+     var http = require('http')  
+     var fs = require('fs')  
+       
+     var server = http.createServer(function (req, res) {  
+       res.writeHead(200, { 'content-type': 'text/plain' })  
+       
+       fs.createReadStream(process.argv[3]).pipe(res)  
+     })  
+       
+     server.listen(Number(process.argv[2]))  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+  You have 5 challenges left. Type 'learnyounode' to show the menu.  
+   

@@ -1,0 +1,71 @@
+{"hour":22,"minute":25,"second":0}
+{"unixtime":1457061900196}
+/api/parsetime
+
+Your submission results compared to the expected:
+
+────────────────────────────────────────────────────────────────────────────────
+
+1.  ACTUAL:    "{\"hour\":22,\"minute\":25,\"second\":0}"
+1.  EXPECTED:  "{\"hour\":22,\"minute\":25,\"second\":0}"
+
+{"hour":22,"minute":25,"second":0}
+{"unixtime":1457061900196}
+/api/unixtime
+2.  ACTUAL:    "{\"unixtime\":1457061900196}"
+2.  EXPECTED:  "{\"unixtime\":1457061900196}"
+
+3.  ACTUAL:    ""
+3.  EXPECTED:  ""
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ✓ Submission results match expected  
+   
+ # PASS  
+   
+  Your solution to HTTP JSON API SERVER passed!  
+   
+  Here's the official solution in case you want to compare notes:  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+   
+     var http = require('http')  
+     var url = require('url')  
+       
+     function parsetime (time) {  
+       return {  
+         hour: time.getHours(),  
+         minute: time.getMinutes(),  
+         second: time.getSeconds()  
+       }  
+     }  
+       
+     function unixtime (time) {  
+       return { unixtime : time.getTime() }  
+     }  
+       
+     var server = http.createServer(function (req, res) {  
+       var parsedUrl = url.parse(req.url, true)  
+       var time = new Date(parsedUrl.query.iso)  
+       var result  
+       
+       if (/^\/api\/parsetime/.test(req.url))  
+         result = parsetime(time)  
+       else if (/^\/api\/unixtime/.test(req.url))  
+         result = unixtime(time)  
+       
+       if (result) {  
+         res.writeHead(200, { 'Content-Type': 'application/json' })  
+         res.end(JSON.stringify(result))  
+       } else {  
+         res.writeHead(404)  
+         res.end()  
+       }  
+     })  
+     server.listen(Number(process.argv[2]))  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+  You have 4 challenges left. Type 'learnyounode' to show the menu.  
+   

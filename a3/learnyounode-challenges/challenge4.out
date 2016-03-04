@@ -1,0 +1,35 @@
+
+Your submission results compared to the expected:
+
+                 ACTUAL                                 EXPECTED                
+────────────────────────────────────────────────────────────────────────────────
+
+   "2"                                 ==    "2"                                
+   ""                                  ==    ""                                 
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ✓ Submission results match expected  
+   
+  ✓ Used asynchronous method: fs.readFile()  
+   
+ # PASS  
+   
+  Your solution to MY FIRST ASYNC I/O! passed!  
+   
+  Here's the official solution in case you want to compare notes:  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+   
+     var fs = require('fs')  
+     var file = process.argv[2]  
+       
+     fs.readFile(file, function (err, contents) {  
+       // fs.readFile(file, 'utf8', callback) can also be used  
+       var lines = contents.toString().split('\n').length - 1  
+       console.log(lines)  
+     })  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+  You have 9 challenges left. Type 'learnyounode' to show the menu.  
+   
