@@ -3,7 +3,8 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-        "mysql": ">=2.5.4",
-        "squel": ">= 0.0.1"
+        "mysql": "*",
+        "squel": "*",
+        "prompt": "*"
   }
 }
