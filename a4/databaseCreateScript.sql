@@ -49,16 +49,22 @@ select h.hotelId as 'hotelId',
     r.type as 'type'
 from hotel h
 inner join room r on h.hotelId=r.hotelId;
-CREATE  OR REPLACE VIEW v_rooms AS
-select b.bookingId as 'bookingId',
-    h.hotelId as 'hotelId',
-    h.hotelName as 'hotelName',
-    h.city as 'city',
-    r.roomNo as 'roomNo',
-    r.price as 'price',
-    r.type as 'type'
-from hotel h
-left join room r on h.hotelId=r.hotelId;
+
+USE `hotel`;
+CREATE  OR REPLACE VIEW v_bookings AS
+select b.bookingId,
+    b.hotelId,
+    b.guestId,
+    h.hotelName,
+    b.roomNo, 
+    r.price,
+    r.type,
+    b.startDate,
+    b.endDate
+from booking b
+left join hotel h on h.hotelId=b.hotelId
+left join room r on (r.hotelId=b.hotelId and r.roomNo=b.roomNo)
+;
 
 
 /* Sample Data */
