@@ -22,6 +22,7 @@ function main () {
 	console.log('Select an Action:');
 	console.log(' 1) Guest Registration');
 	console.log(' 2) Get List of Guests');
+	console.log(' 3) Create Booking');
 	console.log(' 0) Exit');
 	prompt.get(['actionNumber'], function (err, result) {
 		//console.log(result.actionNumber);
@@ -31,6 +32,9 @@ function main () {
 				break;
 			case 2 : 
 				getGuests();
+				break;
+			case 3 :
+				insertBooking();
 				break;
 			case 0 :
 				spaces();
@@ -48,16 +52,17 @@ function main () {
 }
 
 function guestRegistration () {
-	// start command prompt
 	spaces();
 	console.log('Starting Guest Registration ...');
 	prompt.get(['guestAddress', 'guestName'], function (err, result) {
-	    var guestAddress = result.guestAddress;
-	    var guestName = result.guestName;
+	    var guestAddress = result.guestAddress.toString().trim();
+	    var guestName = result.guestName.toString().trim();
 
 		conn.query(sqlGen.guestRegistration(guestAddress,guestName), function (err, results) {
 			if (err) {
-				console.log(err);
+				console.log("Guest creation failed. Check guest does not already exist.");
+				spaces();
+				main()
 			} else {
 				spaces();
 				main();
@@ -71,14 +76,71 @@ function getGuests() {
 		if (err) {
 			console.log(err);
 		} else {
+			spaces();
 			console.log("Guests in the system:")
 			for (x in results) {
 				console.log(" guestId:" + results[x].guestId + " - " + results[x].guestName + ' @ ' + results[x].guestAddress);
 			}
 		}
-
 		spaces();
 		main();
+	});
+}
+
+function insertBooking () {
+	spaces();
+	console.log("Preparing to enter booking ...\n");
+	console.log("Enter dates in format 'YYYY-MM-DD'");
+
+	prompt.get(['hotelId','roomNo','guestId','startDate','endDate'], function (err, result) {
+		var hotelId = Number(result.hotelId);
+		var roomNo = Number(result.roomNo);
+		var guestId = Number(result.guestId);
+		var startDate = result.startDate.toString().trim();
+		var endDate = result.endDate.toString().trim();
+
+		if (validDate(startDate) || validDate(endDate)) {
+			if (dateToInt(startDate) < dateToInt(endDate)) {
+				// no primary key on room, so we cant verify room no is a valid entry in the insert statement
+				// therefore run a query to check if the room exists
+				spaces();
+				console.log("Dates valid. Processing request...");
+				conn.query(sqlGen.checkRoomExists(hotelId,roomNo), function (err, results) {
+					if (results[0].roomExists > 0) {
+						conn.query(sqlGen.insertBooking(hotelId,roomNo,guestId,startDate,endDate), function (err, results) {
+							if (err) {
+								console.log("Booking failed. Check parameters are unique.  See:");
+								console.log(err);
+								spaces();
+								main();
+							} else {
+								// get the last insert id, which will be for the booking
+								conn.query(sqlGen.lastId(), function (err, results) {
+									console.log("Booking success. Your booking reference is #" + results[0].lastId);
+									console.log("Booking complete.");
+									spaces();
+									main();
+								});
+							}
+						});
+					} else {
+						console.log("Booking failed. Room number not valid.");
+						spaces();
+						main();
+					}
+				});				
+			} else {
+				spaces();
+				console.log("Booking failed. Start date must be before end date.");
+				spaces();
+				main();
+			}
+		} else {
+			spaces();
+			console.log("Booking failed. Enter dates in valid form");
+			spaces()
+			main();
+		}
 	});
 }
 
@@ -95,6 +157,30 @@ function SqlGen () {
 	this.getGuests = function () {
 		var sqlStr = squel.select()
 							.from("guest")
+							.order("guestId")
+							.toString();
+		return sqlStr;
+	}
+	this.insertBooking = function (hotelId, roomNo, guestId, startDate, endDate) {
+		var sqlStr = squel.insert()
+							.into("booking")
+							.set("hotelId",hotelId)
+							.set("roomNo",roomNo)
+							.set("guestId",guestId)
+							.set("startDate",startDate)
+							.set("endDate",endDate)
+							.toString();
+		return sqlStr;
+	}
+	this.lastId = function () {
+		return "SELECT LAST_INSERT_ID() AS 'lastId';"
+	}
+	this.checkRoomExists = function (hotelId, roomNo) {
+		var sqlStr = squel.select()
+							.from("room")
+							.field("count(*)", "roomExists")
+							.where("hotelId="+hotelId)
+							.where("roomNo="+roomNo)
 							.toString();
 		return sqlStr;
 	}
@@ -102,6 +188,34 @@ function SqlGen () {
 
 function spaces () {
 	console.log('\n**************************************************\n')
+}
+
+// very basic function to check dates
+// not comprehensive, but will get through a bunch of cases
+function validDate (date) {
+	var month = date.substr(5,2);
+	var day = date.substr(8,2);
+	//console.log(date.length);
+	if ( date.length != 10 ) {
+		return false;
+	} else {
+		if ( date.substr(4,1) != "-" || date.substr(7,1) != "-" ) {
+			return false;
+		} else {
+			if ( month > 0 && month <= 12 || day > 0 && day <= 31) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+}
+
+function dateToInt (date) {
+	var year = date.substr(0,4);
+	var month = date.substr(5,2);
+	var day = date.substr(8,2);
+	return Number(year+month+day);
 }
 
 
