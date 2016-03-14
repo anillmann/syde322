@@ -43,7 +43,7 @@ CREATE TABLE `booking` (
   KEY `fk_booking_roomNo_idx` (`roomNo`),
   CONSTRAINT `fk_booking_guestId` FOREIGN KEY (`guestId`) REFERENCES `guest` (`guestId`),
   CONSTRAINT `fk_booking_hotelId` FOREIGN KEY (`hotelId`) REFERENCES `hotel` (`hotelId`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +52,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (8,1,1,1,'0000-00-00','0000-00-00'),(10,1,101,1,'0000-00-00','0000-00-00'),(12,1,102,1,'0000-00-00','0000-00-00'),(13,1,101,1,'2016-01-01','2016-01-05');
+INSERT INTO `booking` VALUES (13,1,101,1,'2016-01-01','2016-01-05'),(14,2,101,2,'2016-01-01','2016-01-04');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -78,7 +78,7 @@ CREATE TABLE `guest` (
 
 LOCK TABLES `guest` WRITE;
 /*!40000 ALTER TABLE `guest` DISABLE KEYS */;
-INSERT INTO `guest` VALUES (1,'123 Main St','John Smith');
+INSERT INTO `guest` VALUES (2,'123 Main St','Jim Bob'),(1,'123 Main St','John Smith');
 /*!40000 ALTER TABLE `guest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,6 +146,7 @@ SET character_set_client = utf8;
 /*!50001 CREATE VIEW `v_bookings` AS SELECT 
  1 AS `bookingId`,
  1 AS `hotelId`,
+ 1 AS `guestId`,
  1 AS `hotelName`,
  1 AS `city`,
  1 AS `roomNo`,
@@ -215,7 +216,7 @@ USE `hotel`;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_bookings` AS select `b`.`bookingId` AS `bookingId`,`b`.`hotelId` AS `hotelId`,`h`.`hotelName` AS `hotelName`,`h`.`city` AS `city`,`b`.`roomNo` AS `roomNo`,`r`.`price` AS `price`,`r`.`type` AS `type`,`b`.`startDate` AS `startDate`,`b`.`endDate` AS `endDate` from ((`booking` `b` left join `hotel` `h` on((`b`.`hotelId` = `h`.`hotelId`))) left join `room` `r` on((`b`.`roomNo` = `r`.`roomNo`))) */;
+/*!50001 VIEW `v_bookings` AS select `b`.`bookingId` AS `bookingId`,`b`.`hotelId` AS `hotelId`,`b`.`guestId` AS `guestId`,`h`.`hotelName` AS `hotelName`,`h`.`city` AS `city`,`b`.`roomNo` AS `roomNo`,`r`.`price` AS `price`,`r`.`type` AS `type`,`b`.`startDate` AS `startDate`,`b`.`endDate` AS `endDate` from ((`booking` `b` left join `hotel` `h` on((`h`.`hotelId` = `b`.`hotelId`))) left join `room` `r` on(((`r`.`hotelId` = `b`.`hotelId`) and (`r`.`roomNo` = `b`.`roomNo`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -247,4 +248,4 @@ USE `hotel`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-10 21:59:12
+-- Dump completed on 2016-03-13 23:16:35

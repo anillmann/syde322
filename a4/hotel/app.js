@@ -2,6 +2,7 @@
 var mysql = require('mysql');
 var squel = require('squel');
 var prompt = require('prompt');
+require('console.table');
 
 //  Database Connection  //
 var conn = mysql.createConnection({
@@ -22,7 +23,9 @@ function main () {
 	console.log('Select an Action:');
 	console.log(' 1) Guest Registration');
 	console.log(' 2) Get List of Guests');
-	console.log(' 3) Create Booking');
+	console.log(' 3) Search Available Rooms');
+	console.log(' 4) Create Booking');
+	console.log(' 5) Search Bookings');
 	console.log(' 0) Exit');
 	prompt.get(['actionNumber'], function (err, result) {
 		//console.log(result.actionNumber);
@@ -34,7 +37,13 @@ function main () {
 				getGuests();
 				break;
 			case 3 :
+				searchRooms();
+				break;
+			case 4 :
 				insertBooking();
+				break;
+			case 5 :
+				searchBookings();
 				break;
 			case 0 :
 				spaces();
@@ -144,13 +153,126 @@ function insertBooking () {
 	});
 }
 
+function searchBookings () {
+	spaces();
+	console.log("Preparing to search bookings ...\n");
+	console.log("Date parameters mandatory, remainder optional.")
+	console.log("Enter dates in format 'YYYY-MM-DD'");	
+
+	prompt.get(['startDate','endDate','hotelName','city','roomPrice','roomType'], function (err, result) {
+		var startDate = result.startDate.toString().trim();
+		var endDate = result.endDate.toString().trim();
+		var hotelName = result.hotelName.toString().trim();
+		var city = result.city.toString().trim();
+		var roomPrice = Number(result.roomPrice);
+		var roomType = result.roomType.toString().trim();
+
+		if (validDate(startDate) || validDate(endDate)) {
+			if (dateToInt(startDate) < dateToInt(endDate)) {
+				// no primary key on room, so we cant verify room no is a valid entry in the insert statement
+				// therefore run a query to check if the room exists
+				spaces();
+				console.log("Dates valid. Processing request...");
+				//console.log(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType));
+				conn.query(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType), function (err, results) {
+					if (err) {
+						console.log(err);
+					} else {
+						if (results.length == 0 ) {
+							console.log('\n');
+							console.log("No bookings matching search criteria.");
+						} else {
+							console.log('\n');
+							console.table(results);
+						}
+					}
+					spaces();
+					main();
+				});
+			} else {
+				spaces();
+				console.log("Booking failed. Start date must be before end date.");
+				spaces();
+				main();
+			}
+		} else {
+			spaces();
+			console.log("Booking failed. Enter dates in valid form");
+			spaces()
+			main();
+		}
+	});
+}
+
+function searchRooms () {
+	spaces();
+	console.log("Preparing to search available rooms ...\n");
+	console.log("Date parameters mandatory, remainder optional.")
+	console.log("Enter dates in format 'YYYY-MM-DD'");	
+
+	prompt.get(['startDate','endDate','hotelName','city','roomPrice','roomType'], function (err, result) {
+		var startDate = result.startDate.toString().trim();
+		var endDate = result.endDate.toString().trim();
+		var hotelName = result.hotelName.toString().trim();
+		var city = result.city.toString().trim();
+		var roomPrice = Number(result.roomPrice);
+		var roomType = result.roomType.toString().trim();
+
+		if (validDate(startDate) || validDate(endDate)) {
+			if (dateToInt(startDate) < dateToInt(endDate)) {
+				// no primary key on room, so we cant verify room no is a valid entry in the insert statement
+				// therefore run a query to check if the room exists
+				spaces();
+				console.log("Dates valid. Processing request...");
+				//console.log(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType));
+				conn.query(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType), function (err, results) {
+					if (err) {
+						console.log(err);
+						spaces();
+						main();
+					} else {
+						var params = [[],[]];
+						if (results.length > 0 ) {
+							for (i=0;i<results.length;i++) {
+								params[i][0] = results[i].hotelId;
+								params[i][1] = results[i].roomNo;
+							}
+						}	
+						//console.log(sqlGen.searchRooms(params));
+						conn.query(sqlGen.searchRooms(params), function (err, results) {
+							if (err) {
+								console.log(err);
+							} else {
+								console.log('\n');
+								console.table(results);
+							}
+							spaces();
+							main();
+						});
+					}
+				});
+			} else {
+				spaces();
+				console.log("Booking failed. Start date must be before end date.");
+				spaces();
+				main();
+			}
+		} else {
+			spaces();
+			console.log("Booking failed. Enter dates in valid form");
+			spaces()
+			main();
+		}
+	});
+}
+
 //  a factory to generate sql strings  //
 function SqlGen () {
 	this.guestRegistration = function (guestAddress, guestName) {
 		var sqlStr = squel.insert()
 							.into("guest")
-							.set("guestAddress", guestAddress)
-							.set("guestName", guestName)
+							.set("guestAddress", "'"+guestAddress+"'")
+							.set("guestName", "'"+guestName+"'")
 							.toString();
 		return sqlStr;
 	}
@@ -167,8 +289,8 @@ function SqlGen () {
 							.set("hotelId",hotelId)
 							.set("roomNo",roomNo)
 							.set("guestId",guestId)
-							.set("startDate",startDate)
-							.set("endDate",endDate)
+							.set("startDate","'"+startDate+"'")
+							.set("endDate","'"+endDate+"'")
 							.toString();
 		return sqlStr;
 	}
@@ -183,6 +305,57 @@ function SqlGen () {
 							.where("roomNo="+roomNo)
 							.toString();
 		return sqlStr;
+	}
+	this.searchBookings = function (formatted, startDate, endDate, hotelName, city, roomPrice, roomType) {
+		var params = {'hotelName' : hotelName,
+						'city' : city,
+						'roomPrice' : roomPrice,
+						'roomType' : roomType};
+		var sql = squel.select()
+							.from("v_bookings");
+		if (formatted) {
+			sql = sql.field('bookingId')
+						.field('city')
+						.field('hotelId')
+						.field('hotelName')
+						.field('roomNo')
+						.field('price')
+						.field('type')
+						.field("DATE_FORMAT(startDate,'%Y-%m-%d')","startDate")
+						.field("DATE_FORMAT(endDate,'%Y-%m-%d')","endDate");
+		}			
+		sql = sql.where(
+					// either the search startDate is in between start and end date
+					// or the search endDate is in between start and end date
+					squel.expr()
+						.or_begin()
+							.and("startDate<='"+startDate+"'")
+							.and("endDate>='"+startDate+"'")
+						.end()
+						.or_begin()
+							.and("startDate<='"+endDate+"'")
+							.and("endDate>='"+endDate+"'")
+						.end()
+				);
+		// append where clauses for options search elements
+		for (x in params) {
+			if (params[x] != "" || params[x] != 0) {
+				sql = sql.where(x+"='"+params[x]+"'");
+			}
+		}
+		return sql.toString();
+	}
+	this.searchRooms = function (params) {
+		var exp = squel.expr()
+		for (i=0;i<params.length;i++) {
+			exp = exp.and_begin().or('hotelId<>'+params[i][0]).or('roomNo<>'+params[i][1]).end();
+		}
+		var sql = squel.select()
+						.from('v_rooms')
+						.where(exp)
+						.order('hotelId')
+						.order('roomNo')
+		return sql.toString();
 	}
 }
 
