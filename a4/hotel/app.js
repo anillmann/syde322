@@ -86,10 +86,8 @@ function getGuests() {
 			console.log(err);
 		} else {
 			spaces();
-			console.log("Guests in the system:")
-			for (x in results) {
-				console.log(" guestId:" + results[x].guestId + " - " + results[x].guestName + ' @ ' + results[x].guestAddress);
-			}
+			console.log('Guests in the system:\n')
+			console.table(results);
 		}
 		spaces();
 		main();
@@ -225,25 +223,32 @@ function searchRooms () {
 				spaces();
 				console.log("Dates valid. Processing request...");
 				//console.log(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType));
-				conn.query(sqlGen.searchBookings(true,startDate,endDate,hotelName,city,roomPrice,roomType), function (err, results) {
+				conn.query(sqlGen.searchBookings(true,startDate,endDate), function (err, results) {
 					if (err) {
 						console.log(err);
+						console.log('tried\n');
+						console.log(sqlGen.searchBookings(true,startDate,endDate));
 						spaces();
 						main();
 					} else {
-						var params = [[],[]];
+						//console.log('tried\n');
+						//console.log(sqlGen.searchBookings(true,startDate,endDate));
+						//console.table(results);
+						var params = [];
+
 						if (results.length > 0 ) {
 							for (i=0;i<results.length;i++) {
-								params[i][0] = results[i].hotelId;
-								params[i][1] = results[i].roomNo;
+								params.push([results[i].hotelId, results[i].roomNo]);
 							}
 						}	
-						//console.log(sqlGen.searchRooms(params));
-						conn.query(sqlGen.searchRooms(params), function (err, results) {
+						conn.query(sqlGen.searchRooms(params, hotelName, city, roomPrice, roomType), function (err, results) {
 							if (err) {
 								console.log(err);
+								console.log('tried\n');
+								console.log(sqlGen.searchRooms(params, hotelName, city, roomPrice, roomType));
 							} else {
-								console.log('\n');
+								//console.log('\n');
+								//console.log(sqlGen.searchRooms(params, hotelName, city, roomPrice, roomType));
 								console.table(results);
 							}
 							spaces();
@@ -309,8 +314,8 @@ function SqlGen () {
 	this.searchBookings = function (formatted, startDate, endDate, hotelName, city, roomPrice, roomType) {
 		var params = {'hotelName' : hotelName,
 						'city' : city,
-						'roomPrice' : roomPrice,
-						'roomType' : roomType};
+						'price' : roomPrice,
+						'type' : roomType};
 		var sql = squel.select()
 							.from("v_bookings");
 		if (formatted) {
@@ -339,22 +344,30 @@ function SqlGen () {
 				);
 		// append where clauses for options search elements
 		for (x in params) {
-			if (params[x] != "" || params[x] != 0) {
+			if (params[x] != undefined && (params[x] != "" || params[x] != 0)) {
 				sql = sql.where(x+"='"+params[x]+"'");
 			}
 		}
 		return sql.toString();
 	}
-	this.searchRooms = function (params) {
+	this.searchRooms = function (params, hotelName, city, roomPrice, roomType) {
+		var sqlParams = {'hotelName' : hotelName,
+						'city' : city,
+						'type' : roomPrice,
+						'price' : roomType};
 		var exp = squel.expr()
 		for (i=0;i<params.length;i++) {
 			exp = exp.and_begin().or('hotelId<>'+params[i][0]).or('roomNo<>'+params[i][1]).end();
 		}
 		var sql = squel.select()
 						.from('v_rooms')
-						.where(exp)
-						.order('hotelId')
-						.order('roomNo')
+						.where(exp);
+		for (x in sqlParams) {
+			if (sqlParams[x] != undefined && (sqlParams[x] != "" || sqlParams[x] != 0)) {
+				sql = sql.where(x+"='"+sqlParams[x]+"'");
+			}
+		}				
+		sql = sql.order('hotelId').order('roomNo');
 		return sql.toString();
 	}
 }
