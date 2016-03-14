@@ -69,10 +69,12 @@ function guestRegistration () {
 
 		conn.query(sqlGen.guestRegistration(guestAddress,guestName), function (err, results) {
 			if (err) {
-				console.log("Guest creation failed. Check guest does not already exist.");
+				console.log(err);
+				console.log("\nGuest creation failed. Check guest does not already exist.");
 				spaces();
 				main()
 			} else {
+				console.log("\nGuest added sucessfully.")
 				spaces();
 				main();
 			}
@@ -189,13 +191,13 @@ function searchBookings () {
 				});
 			} else {
 				spaces();
-				console.log("Booking failed. Start date must be before end date.");
+				console.log("Search failed. Start date must be before end date.");
 				spaces();
 				main();
 			}
 		} else {
 			spaces();
-			console.log("Booking failed. Enter dates in valid form");
+			console.log("Search failed. Enter dates in valid form");
 			spaces()
 			main();
 		}
@@ -249,6 +251,7 @@ function searchRooms () {
 							} else {
 								//console.log('\n');
 								//console.log(sqlGen.searchRooms(params, hotelName, city, roomPrice, roomType));
+								console.log('The following rooms are available:\n');
 								console.table(results);
 							}
 							spaces();
@@ -258,13 +261,13 @@ function searchRooms () {
 				});
 			} else {
 				spaces();
-				console.log("Booking failed. Start date must be before end date.");
+				console.log("Search failed. Start date must be before end date.");
 				spaces();
 				main();
 			}
 		} else {
 			spaces();
-			console.log("Booking failed. Enter dates in valid form");
+			console.log("Search failed. Enter dates in valid form");
 			spaces()
 			main();
 		}
@@ -276,8 +279,8 @@ function SqlGen () {
 	this.guestRegistration = function (guestAddress, guestName) {
 		var sqlStr = squel.insert()
 							.into("guest")
-							.set("guestAddress", "'"+guestAddress+"'")
-							.set("guestName", "'"+guestName+"'")
+							.set("guestAddress",guestAddress)
+							.set("guestName",guestName)
 							.toString();
 		return sqlStr;
 	}
@@ -294,8 +297,8 @@ function SqlGen () {
 							.set("hotelId",hotelId)
 							.set("roomNo",roomNo)
 							.set("guestId",guestId)
-							.set("startDate","'"+startDate+"'")
-							.set("endDate","'"+endDate+"'")
+							.set("startDate",startDate)
+							.set("endDate",endDate)
 							.toString();
 		return sqlStr;
 	}
@@ -334,12 +337,12 @@ function SqlGen () {
 					// or the search endDate is in between start and end date
 					squel.expr()
 						.or_begin()
-							.and("startDate<='"+startDate+"'")
-							.and("endDate>='"+startDate+"'")
+							.and("startDate>='"+startDate+"'")
+							.and("startDate<='"+endDate+"'")
 						.end()
 						.or_begin()
-							.and("startDate<='"+endDate+"'")
-							.and("endDate>='"+endDate+"'")
+							.and("endDate>='"+startDate+"'")
+							.and("endDate<='"+endDate+"'")
 						.end()
 				);
 		// append where clauses for options search elements
@@ -348,6 +351,7 @@ function SqlGen () {
 				sql = sql.where(x+"='"+params[x]+"'");
 			}
 		}
+		//console.log(sql.toString());
 		return sql.toString();
 	}
 	this.searchRooms = function (params, hotelName, city, roomPrice, roomType) {
