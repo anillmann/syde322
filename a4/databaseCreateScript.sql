@@ -1,3 +1,5 @@
+-- Andrew Illmann, 20143037
+
 create database hotel;
 use hotel;
 

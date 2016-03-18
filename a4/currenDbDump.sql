@@ -1,3 +1,6 @@
+-- Andrew Illmann, 20143037
+-- 
+--
 -- MySQL dump 10.13  Distrib 5.6.27, for osx10.8 (x86_64)
 --
 -- Host: localhost    Database: hotel
