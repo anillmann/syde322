@@ -43,7 +43,7 @@ CREATE TABLE `booking` (
   KEY `fk_booking_roomNo_idx` (`roomNo`),
   CONSTRAINT `fk_booking_guestId` FOREIGN KEY (`guestId`) REFERENCES `guest` (`guestId`),
   CONSTRAINT `fk_booking_hotelId` FOREIGN KEY (`hotelId`) REFERENCES `hotel` (`hotelId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +52,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (13,1,101,1,'2016-01-01','2016-01-05'),(14,2,101,2,'2016-01-01','2016-01-04');
+INSERT INTO `booking` VALUES (13,1,101,1,'2016-01-01','2016-01-05'),(14,2,101,2,'2016-01-01','2016-01-04'),(15,5,101,3,'2016-05-01','2016-05-14'),(16,2,102,4,'2016-05-01','2016-05-04'),(17,3,4901,5,'2016-06-01','2016-07-01');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +69,7 @@ CREATE TABLE `guest` (
   `guestName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`guestId`),
   UNIQUE KEY `uq_guest` (`guestAddress`,`guestName`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `guest` (
 
 LOCK TABLES `guest` WRITE;
 /*!40000 ALTER TABLE `guest` DISABLE KEYS */;
-INSERT INTO `guest` VALUES (2,'123 Main St','Jim Bob'),(1,'123 Main St','John Smith');
+INSERT INTO `guest` VALUES (3,'1 Street St','Bill'),(4,'123 Avenue Road','John'),(2,'123 Main St','Jim Bob'),(1,'123 Main St','John Smith'),(5,'3 First Street','Tom Collins');
 /*!40000 ALTER TABLE `guest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,30 +174,6 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Dumping routines for database 'hotel'
---
-/*!50003 DROP PROCEDURE IF EXISTS `purge_guest` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `purge_guest`()
-BEGIN
-	delete from guest;
-    alter table guest auto_increment = 1;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
 -- Current Database: `hotel`
 --
 
@@ -248,4 +224,4 @@ USE `hotel`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-13 23:16:35
+-- Dump completed on 2016-03-18 12:37:53

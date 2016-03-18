@@ -357,8 +357,8 @@ function SqlGen () {
 	this.searchRooms = function (params, hotelName, city, roomPrice, roomType) {
 		var sqlParams = {'hotelName' : hotelName,
 						'city' : city,
-						'type' : roomPrice,
-						'price' : roomType};
+						'price' : roomPrice,
+						'type' : roomType};
 		var exp = squel.expr()
 		for (i=0;i<params.length;i++) {
 			exp = exp.and_begin().or('hotelId<>'+params[i][0]).or('roomNo<>'+params[i][1]).end();
@@ -368,7 +368,11 @@ function SqlGen () {
 						.where(exp);
 		for (x in sqlParams) {
 			if (sqlParams[x] != undefined && (sqlParams[x] != "" || sqlParams[x] != 0)) {
-				sql = sql.where(x+"='"+sqlParams[x]+"'");
+				if (x == 'price') {
+					sql = sql.where(x+"<="+sqlParams[x]+"");
+				} else {
+					sql = sql.where(x+"='"+sqlParams[x]+"'");
+				}
 			}
 		}				
 		sql = sql.order('hotelId').order('roomNo');
